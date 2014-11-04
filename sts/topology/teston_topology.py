@@ -47,6 +47,7 @@ class TestONTopology(Topology):
   def __init__(self, teston_mn, onos_controllers, reactive_controllers=False):
     assert onos_controllers is None or isinstance(onos_controllers, list)
     self.log = logging.getLogger(__name__ + '.TestONTopology')
+    teston_mn.update()
     switches_manager = TestONSwitchesManager(teston_mn)
     hosts_manager = TestONHostsManager(teston_mn)
     patch_panel = TestONPatchPanel(teston_mn, hosts_manager, switches_manager)

@@ -59,7 +59,8 @@ class TestONAccessLink(BiDirectionalLinkAbstractClass):
 
 
 class TestONHostInterface(HostInterface):
-  def __init__(self, hw_addr, ips, name):
+  def __init__(self, hw_addr, ips, name, enabled=False):
+    self.enabled = enabled
     super(TestONHostInterface, self).__init__(hw_addr, ips, name)
 
   @property
@@ -131,11 +132,15 @@ class TestONOVSSwitch(object):
 
 
 class TestONPort(object):
-  def __init__(self, hw_addr, name, ips=None):
+  def __init__(self, hw_addr, name, ips=None, enabled=False):
     if hw_addr:
       hw_addr = EthAddr(hw_addr)
     self.hw_addr = hw_addr
     self.name = name
+    if enabled == True:
+        self.enabled = True
+    else:
+        self.enabled = False
     if ips is None:
       ips = []
     if not isinstance(ips, list):

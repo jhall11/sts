@@ -97,6 +97,7 @@ class MininetTopology(Topology):
     self.read_links()
 
   def read_interfaces(self, node_name, interface_cls):
+    self.update()
     response = self.teston_mn.getInterfaces(node_name)
     interfaces = []
     for line in response.split("\n"):
@@ -106,8 +107,9 @@ class MininetTopology(Topology):
       for var in line.split(","):
         key, value = var.split("=")
         vars[key] = value
-      isUp = vars.pop('isUp', True)
-      tmp = interface_cls(hw_addr=vars['mac'], ips=vars['ip'], name=vars['name'])
+      isUp = vars.pop('enabled', "True")
+      isUp = "True" in isUp
+      tmp = interface_cls(hw_addr=vars['mac'], ips=vars['ip'], name=vars['name'], enabled = isUp)
       interfaces.append((tmp))
     return interfaces
 
@@ -115,6 +117,7 @@ class MininetTopology(Topology):
     """
     Read nodes (switches and hosts) from Mininet.
     """
+    self.update()
     # Regex patterns to parse dump output
     # Example host: <Host h1: h1-eth0:10.0.0.1 pid=5227>
     host_re = r"<Host\s(?P<name>[^:]+)\:\s(?P<ifname>[^:]+)\:(?P<ip>[^\s]+)"
@@ -158,6 +161,7 @@ class MininetTopology(Topology):
     """
     Read links in Mininet (assume nodes already be read before)
     """
+    self.update()
     # used to valid link line
     link_re = r"([^\:\s]+)\s([^\:]+)\:([^\:\s]+)"
     net = self.teston_mn.net().split("\n")
@@ -194,3 +198,8 @@ class MininetTopology(Topology):
           if not self.patch_panel.is_port_connected(src_port):
             link = self.link_cls(src_node, src_port, dst_node, dst_port)
             self.add_link(link)
+    def update(self):
+        """
+        Updates the address and port information for mn nodes
+        """
+        self.teston_mn.update()

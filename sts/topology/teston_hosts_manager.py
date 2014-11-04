@@ -60,10 +60,11 @@ class TestONHostsManager(HostsManagerAbstractClass):
         key, value = var.split("=")
         vars[key] = value
       # TODO (AH): Read port status
-      isUp = vars.pop('isUp', True)
+      isUp = vars.pop('enabled', "True")
+      isUp = "True" in isUp
       self.log.info("Reading host port %s(%s)" % (vars['name'], vars['mac']))
       tmp = TestONHostInterface(hw_addr=vars['mac'], ips=vars['ip'],
-                                name=vars['name'])
+                                name=vars['name'], enabled=isUp)
       interfaces.append(tmp)
     return interfaces
 
@@ -74,6 +75,8 @@ class TestONHostsManager(HostsManagerAbstractClass):
     # Regex patterns to parse dump output
     # Example host: <Host h1: h1-eth0:10.0.0.1 pid=5227>
     host_re = r"<Host\s(?P<name>[^:]+)\:\s(?P<ifname>[^:]+)\:(?P<ip>[^\s]+)"
+    # update mn port info
+    self.teston_mn.update()
     # Get mininet dump
     dump = self.teston_mn.dump().split("\n")
     for line in dump:

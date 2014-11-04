@@ -56,7 +56,8 @@ class TestONSwitchesManager(SwitchManagerAbstractClass):
         key, value = var.split("=")
         port_vars[key] = value
       # TODO (AH): Read port status
-      isUp = port_vars.pop('isUp', True)
+      isUp = port_vars.pop('enabled', "True")
+      isUp = "True" in isUp
       self.log.info("Reading switch port %s(%s)" % (port_vars['name'],
                                                     port_vars['mac']))
       hw_addr = port_vars['mac']
@@ -68,7 +69,7 @@ class TestONSwitchesManager(SwitchManagerAbstractClass):
       name = port_vars['name']
       if name == 'None':
         name = None
-      tmp = TestONPort(hw_addr=hw_addr, ips=ips, name=name)
+      tmp = TestONPort(hw_addr=hw_addr, ips=ips, name=name, enabled=isUp)
       ports.append(tmp)
     return ports
 
@@ -80,6 +81,8 @@ class TestONSwitchesManager(SwitchManagerAbstractClass):
     # Example Switch:
     # <OVSSwitch s1: lo:127.0.0.1,s1-eth1:None,s1-eth2:None,s1-eth3:None pid=5238>
     sw_re = r"<OVSSwitch\s(?P<name>[^:]+)\:\s(?P<ports>([^,]+,)*[^,\s]+)"
+    # Update mn port info
+    self.teston_mn.update()
     # Get mininet dump
     dump = self.teston_mn.dump().split("\n")
     for line in dump:
