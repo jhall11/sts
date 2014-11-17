@@ -74,7 +74,9 @@ class TestONHostsManager(HostsManagerAbstractClass):
     """
     # Regex patterns to parse dump output
     # Example host: <Host h1: h1-eth0:10.0.0.1 pid=5227>
-    host_re = r"<Host\s(?P<name>[^:]+)\:\s(?P<ifname>[^:]+)\:(?P<ip>[^\s]+)"
+    #            or <Host h1:  pid=12725>
+    # NOTE: Does not match <Host h2: h2-eth0:10.0.0.2,h2-eth1:10.0.1.2 pid=14386>
+    host_re = r"<Host\s(?P<name>[^:]+)\:((\s(?P<ifname>[^:]+)\:(?P<ip>[^\s]+))|(\s)\spid=(?P<pid>[^>]+))"
     # update mn port info
     self.teston_mn.update()
     # Get mininet dump
