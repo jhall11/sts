@@ -110,6 +110,8 @@ class TestONSwitchesManager(SwitchManagerAbstractClass):
         continue
       search = re.search(dst_re, line)
       # Just a double check for hosts
+      if not search:
+        continue
       if not search.group('src_port').startswith('h'):
         continue
       switch = self.get_switch(search.group('dst'))
