@@ -89,7 +89,7 @@ class TestONSwitchesManager(SwitchManagerAbstractClass):
       if line.startswith("<OVSSwitch"):
         result = re.search(sw_re, line, re.I)
         name = result.group('name')
-        dpid = int(self.teston_mn.getSwitchDPID(name))
+        dpid = str(self.teston_mn.getSwitchDPID(name))
         self.log.info("Reading switch %s(%s)" % (name, dpid))
         ports = self._read_ports(name)
         switch = TestONOVSSwitch(dpid=dpid, name=name, ports=ports,
