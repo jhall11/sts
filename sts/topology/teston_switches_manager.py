@@ -80,7 +80,8 @@ class TestONSwitchesManager(SwitchManagerAbstractClass):
     # Regex patterns to parse dump output
     # Example Switch:
     # <OVSSwitch s1: lo:127.0.0.1,s1-eth1:None,s1-eth2:None,s1-eth3:None pid=5238>
-    sw_re = r"<OVSSwitch\s(?P<name>[^:]+)\:\s(?P<ports>([^,]+,)*[^,\s]+)"
+    # <OVSSwitch{'protocols': 'OpenFlow10'} s1: lo:127.0.0.1,s1-eth1:None,s1-eth2:None pid=25974>
+    sw_re = r"<OVSSwitch(\{.*\})?\s(?P<name>[^:]+)\:\s(?P<ports>([^,]+,)*[^,\s]+)"
     # Update mn port info
     self.teston_mn.update()
     # Get mininet dump
